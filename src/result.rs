@@ -1,5 +1,3 @@
-//! Conntrack prelude 
-
 pub use crate::error::Error;
 
 /// Result is an alias for `core::result::Result<T, conntrack::error::Error>`

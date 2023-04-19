@@ -1,5 +1,3 @@
-//! Conntrack Error 
-
 use std::fmt::Debug;
 
 /// Error consolidates and propagates all underlying error types. 
