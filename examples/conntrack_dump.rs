@@ -10,14 +10,16 @@ fn main() -> Result<()> {
         .write_style_or("RUST_LOG_STYLE", "always");
 
     env_logger::init_from_env(env);
-    log::info!("Hello World!");
 
     // Create the Conntrack table via netfilter socket syscall
     let mut ct = Conntrack::connect()?;
 
     // Dump conntrack table as a Vec<Flow>
     let flows = ct.dump()?;
-    dbg!(flows);
+
+    for flow in flows {
+        log::info!("{flow:?}");
+    }
 
     Ok(())
 }
