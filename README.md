@@ -1,6 +1,11 @@
 [![github]](https://github.com/rusty-bolt/conntrack-rs)
+[![crates-io]](https://crates.io/crates/conntrack)
+[![rust-docs]](https://docs.rs/conntrack/)
+[![Dependency Status](https://deps.rs/repo/github/rusty-bolt/conntrack-rs/status.svg)](https://deps.rs/repo/github/rusty-bolt/conntrack-rs)
 
 [github]: https://img.shields.io/badge/github-rusty--bolt/conntrack--rs-blueviolet?style=for-the-badge&labelColor=555555&logo=github
+[rust-docs]: https://img.shields.io/docsrs/conntrack/latest?style=for-the-badge&logo=rust&color=informational
+[crates-io]: https://img.shields.io/crates/v/conntrack.svg?style=for-the-badge&logo=rust
 
 ---
 # conntrack-rs
