@@ -1,0 +1,27 @@
+[package]
+name = "conntrack"
+version = "0.1.0"
+authors = [ "Matt Bolt <mbolt35@gmail.com" ]
+repository = "https://github.com/rusty-bolt/conntrack-rs"
+description = "Netfilter Conntrack"
+categories = ["network-programming"]
+keywords = ["conntrack", "netfilter-conntrack"]
+license-file = "LICENSE"
+readme = "README.md"
+edition = "2021"
+
+[dependencies]
+thiserror = "1.0.40"
+chrono = "0.4.24"
+libc = "0.2.141"
+neli = "0.6.4"
+bitflags = "2.1.0"
+log = "0.4.17"
+
+[dev-dependencies]
+anyhow = "1.0.70"
+env_logger = "0.10.0"
+
+[[example]]
+name = "conntrack-dump"
+path = "examples/conntrack_dump.rs"
