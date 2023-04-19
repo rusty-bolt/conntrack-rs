@@ -31,7 +31,7 @@ iptables -A INPUT -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
 ```
 
 # Example
-//!
+
 ```rust
 use conntrack::*;
 
