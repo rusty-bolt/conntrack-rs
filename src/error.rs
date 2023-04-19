@@ -1,6 +1,6 @@
 use std::fmt::Debug;
 
-/// Error consolidates and propagates all underlying error types. 
+/// Error consolidates and propagates all underlying error types.
 #[derive(thiserror::Error, Debug)]
 pub enum Error {
     #[error("netlink error: {0}")]

@@ -1,13 +1,13 @@
+use bitflags::bitflags;
 use chrono::prelude::*;
 use neli::neli_enum;
 use std::{net, time::Duration};
-use bitflags::bitflags;
 
-/// The `Flow` type contains all the information of a connection dumped from the 
-/// conntrack table. Note that the `Flow` type can be used to support multiple 
-/// extended formats as well to allow for expansions on the library. Thus, all 
-/// fields will be optional to support the various formats/options/configs 
-/// that can be set by the linux kernel. 
+/// The `Flow` type contains all the information of a connection dumped from the
+/// conntrack table. Note that the `Flow` type can be used to support multiple
+/// extended formats as well to allow for expansions on the library. Thus, all
+/// fields will be optional to support the various formats/options/configs
+/// that can be set by the linux kernel.
 #[derive(Default, Debug)]
 pub struct Flow {
     /// Unique id assigned to this conntrack entry.
@@ -20,16 +20,16 @@ pub struct Flow {
     pub reply: Option<IpTuple>,
     /// Metadata specific to the protocol being used to facilitate the network transfer.
     pub proto_info: Option<ProtoInfo>,
-    /// Byte and packet counter data relative to the traffic origin. Enable with `sysctl 
+    /// Byte and packet counter data relative to the traffic origin. Enable with `sysctl
     /// -w net.netfilter.nf_conntrack_acct=1`
     pub counter_origin: Option<Counter>,
-    /// Byte and packet counter data relative to the traffic reply. Enable with `sysctl 
+    /// Byte and packet counter data relative to the traffic reply. Enable with `sysctl
     /// -w net.netfilter.nf_conntrack_acct=1`
     pub counter_reply: Option<Counter>,
     /// Duration until conntrack entry is invalidated; reset to initial value when connection sees a new packet.
     /// Default TCP connection timeout is 5 days.
     pub timeout: Option<Duration>,
-    /// Contains the status values parsed into the various status flags, represented as strings. 
+    /// Contains the status values parsed into the various status flags, represented as strings.
     pub status: Option<Vec<String>>,
     /// Use is a reference count for the connection used internally for garbage collection.
     pub entry_use: Option<u32>,
@@ -245,7 +245,6 @@ pub struct Timestamp {
     pub start: Option<DateTime<Utc>>,
     pub end: Option<DateTime<Utc>>,
 }
-
 
 // NatInfo contains addition NAT information of a connection
 #[derive(Default, Debug)]

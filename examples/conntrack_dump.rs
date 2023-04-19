@@ -1,9 +1,8 @@
 use conntrack::*;
 use env_logger::Env;
 
-
-/// This example enables logging, connects to netfilter via socket, dumps 
-/// conntrack tables, and iterates and logs each flow within the table. 
+/// This example enables logging, connects to netfilter via socket, dumps
+/// conntrack tables, and iterates and logs each flow within the table.
 fn main() -> Result<()> {
     let env = Env::default()
         .filter_or("RUST_LOG", "info")

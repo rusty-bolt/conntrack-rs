@@ -6,31 +6,36 @@ use std::time::Duration;
 use chrono::TimeZone;
 use chrono::Utc;
 use neli::types::Buffer;
-use neli::{
-    attr::Attribute,
-    genl::Nlattr,
-    consts::genl::*,
-};
+use neli::{attr::Attribute, consts::genl::*, genl::Nlattr};
 
-use crate::result::*;
 use crate::attributes::*;
 use crate::model::*;
+use crate::result::*;
 
-/// The attribute decoder trait is implemented to convert a specific `AttrHandle` to a 
+/// The attribute decoder trait is implemented to convert a specific `AttrHandle` to a
 /// conntrack model. This will be the primary mechanism used to decode nested conntrack
-/// attributes. 
-pub trait AttrDecoder<'a, T, M> where T: NlAttrType {
+/// attributes.
+pub trait AttrDecoder<'a, T, M>
+where
+    T: NlAttrType,
+{
     fn decode(attr_handle: CtAttrHandle<'a, T>) -> Result<M>;
 }
 
-/// A primitive attribute decoder is used to extract numerical values from 
+/// A primitive attribute decoder is used to extract numerical values from
 /// attributes.
-pub trait PrimitiveAttrDecoder<T, M> where T: NlAttrType {
+pub trait PrimitiveAttrDecoder<T, M>
+where
+    T: NlAttrType,
+{
     fn decode(attr: &Nlattr<T, Buffer>) -> Result<M>;
 }
 
-/// A decoder capable of decoding `IpAddr` instances from an Attribute. 
-pub trait IpDecoder<T> where T: NlAttrType {
+/// A decoder capable of decoding `IpAddr` instances from an Attribute.
+pub trait IpDecoder<T>
+where
+    T: NlAttrType,
+{
     fn decode_v4(attr: &Nlattr<T, Buffer>) -> Result<IpAddr>;
     fn decode_v6(attr: &Nlattr<T, Buffer>) -> Result<IpAddr>;
 }
@@ -213,7 +218,7 @@ impl<'a> AttrDecoder<'a, NatAttr, Nat> for Nat {
             }
         }
 
-        Ok(nat)        
+        Ok(nat)
     }
 }
 
@@ -258,7 +263,7 @@ impl<'a> AttrDecoder<'a, SecCtxAttr, SecCtx> for SecCtx {
         }
 
         Ok(sec_ctx)
-    }    
+    }
 }
 
 impl<'a> AttrDecoder<'a, SeqAdjAttr, SeqAdj> for SeqAdj {

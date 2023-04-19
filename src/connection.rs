@@ -6,33 +6,34 @@ use neli::{
     types::{Buffer, GenlBuffer},
 };
 
-use crate::result::*;
 use crate::attributes::*;
+use crate::decoders::*;
 use crate::message::*;
 use crate::model::*;
-use crate::decoders::*;
+use crate::result::*;
 
-/// The `Conntrack` type is used to connect to a netfilter socket and execute 
-/// conntrack table specific commands. 
+/// The `Conntrack` type is used to connect to a netfilter socket and execute
+/// conntrack table specific commands.
 pub struct Conntrack {
     socket: NlSocketHandle,
 }
 
 impl Conntrack {
-    /// This method opens a netfilter socket using a `socket()` syscall, and 
-    /// returns the `Conntrack` instance on success. 
+    /// This method opens a netfilter socket using a `socket()` syscall, and
+    /// returns the `Conntrack` instance on success.
     pub fn connect() -> Result<Self> {
         let socket = NlSocketHandle::connect(NlFamily::Netfilter, Some(0), &[])?;
         Ok(Self { socket })
     }
 
-    /// The dump call will list all connection tracking for the `Conntrack` table as a 
-    /// `Vec<Flow>` instances. 
+    /// The dump call will list all connection tracking for the `Conntrack` table as a
+    /// `Vec<Flow>` instances.
     pub fn dump(&mut self) -> Result<Vec<Flow>> {
         let genlhdr = Genlmsghdr::new(
-            0u8, 
-            libc::NFNETLINK_V0 as u8, 
-            GenlBuffer::<ConntrackAttr, Buffer>::new());
+            0u8,
+            libc::NFNETLINK_V0 as u8,
+            GenlBuffer::<ConntrackAttr, Buffer>::new(),
+        );
 
         self.socket.send({
             let len = None;
@@ -58,7 +59,6 @@ impl Conntrack {
                 flows.push(Flow::decode(handle)?);
             }
         }
-        
 
         Ok(flows)
     }
