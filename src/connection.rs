@@ -1,3 +1,6 @@
+//! # Connection
+//! This module contains the general API for the conntrack library.
+
 use neli::{
     consts::{nl::*, socket::*},
     genl::Genlmsghdr,

@@ -1,3 +1,6 @@
+//! # Model
+//! This module contains rust model structs for the decoded conntrack data.
+
 use bitflags::bitflags;
 use chrono::prelude::*;
 use neli::neli_enum;

@@ -1,3 +1,6 @@
+//! # Message
+//! This module contains neli compatible subsystem messages.
+
 use neli::neli_enum;
 
 #[inline]

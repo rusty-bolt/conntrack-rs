@@ -1,3 +1,7 @@
+//! # Decoders
+//! This module contains decoder traits and implementations capable of extracting
+//! conntrack table data from neli attributes.
+
 use std::net::IpAddr;
 use std::net::Ipv4Addr;
 use std::net::Ipv6Addr;
