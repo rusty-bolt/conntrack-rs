@@ -1,3 +1,7 @@
+//! # Attributes
+//! This module contains neli compatible attributes used to read and decode
+//! conntrack subsystem responses.
+
 use neli::{
     attr::AttrHandle,
     consts::genl::NlAttrType,

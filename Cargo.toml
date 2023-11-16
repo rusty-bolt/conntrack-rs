@@ -1,7 +1,7 @@
 [package]
 name = "conntrack"
-version = "0.1.0"
-authors = [ "Matt Bolt <mbolt35@gmail.com" ]
+version = "0.1.1"
+authors = ["Matt Bolt <mbolt35@gmail.com>"]
 repository = "https://github.com/rusty-bolt/conntrack-rs"
 description = "Netfilter Conntrack"
 categories = ["network-programming"]

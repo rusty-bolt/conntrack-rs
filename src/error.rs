@@ -1,3 +1,7 @@
+//! # Error
+//! This module contains all the potential error types that can come from
+//! the `conntrack` library.
+
 use std::fmt::Debug;
 
 /// Error consolidates and propagates all underlying error types.
