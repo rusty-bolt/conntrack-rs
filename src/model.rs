@@ -46,6 +46,7 @@ pub struct Flow {
     pub seq_adj_orig: Option<SeqAdj>,
     pub seq_adj_repl: Option<SeqAdj>,
     pub sec_ctx: Option<SecCtx>,
+    pub sec_mark: Option<u32>,
     pub exp: Option<Exp>,
 }
 #[neli_enum(serialized_type = "u8")]

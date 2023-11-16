@@ -147,6 +147,9 @@ impl<'a> AttrDecoder<'a, ConntrackAttr, Flow> for Flow {
                 ConntrackAttr::CtaTimeout => {
                     flow.timeout = Some(Duration::from_secs((u32::decode(attr)?) as u64));
                 }
+                ConntrackAttr::CtaMark => {
+                    flow.mark = Some(u32::decode(attr)?);
+                }
                 ConntrackAttr::CtaSeqAdjOrig => {
                     let seq_adj_orig_attr = attr.get_attr_handle::<SeqAdjAttr>()?;
 
@@ -166,7 +169,7 @@ impl<'a> AttrDecoder<'a, ConntrackAttr, Flow> for Flow {
                     flow.sec_ctx = Some(SecCtx::decode(sec_ctx_attr)?);
                 }
                 ConntrackAttr::CtaSecMark => {
-                    flow.mark = Some(u32::decode(attr)?);
+                    flow.sec_mark = Some(u32::decode(attr)?);
                 }
                 ConntrackAttr::CtaMarkMask => {
                     flow.mark_mask = Some(u32::decode(attr)?);
