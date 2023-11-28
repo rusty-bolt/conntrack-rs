@@ -12,7 +12,7 @@ use std::{net, time::Duration};
 /// extended formats as well to allow for expansions on the library. Thus, all
 /// fields will be optional to support the various formats/options/configs
 /// that can be set by the linux kernel.
-#[derive(Default, Debug, Serialize)]
+#[derive(Clone, Default, Debug, Serialize)]
 pub struct Flow {
     /// Unique id assigned to this conntrack entry.
     pub id: Option<u32>,
@@ -110,7 +110,7 @@ pub enum IpProto {
 }
 
 /// IPTuple contains the source and destination IP as well as protocol information
-#[derive(Default, Debug, Serialize)]
+#[derive(Clone, Default, Debug, Serialize)]
 pub struct IpTuple {
     pub src: Option<net::IpAddr>,
     pub dst: Option<net::IpAddr>,
@@ -119,7 +119,7 @@ pub struct IpTuple {
 }
 
 /// ProtoTuple contains information about the used protocol
-#[derive(Default, Debug, Serialize)]
+#[derive(Clone, Default, Debug, Serialize)]
 pub struct ProtoTuple {
     pub number: Option<IpProto>,
     pub src_port: Option<u16>,
@@ -133,7 +133,7 @@ pub struct ProtoTuple {
 }
 
 /// ProtoInfo contains additional information for certain protocols
-#[derive(Default, Debug, Serialize)]
+#[derive(Clone, Default, Debug, Serialize)]
 pub struct ProtoInfo {
     pub tcp: Option<TcpInfo>,
     pub dccp: Option<DccpInfo>,
@@ -156,7 +156,7 @@ pub enum TcpState {
 }
 
 // TCPInfo contains additional information for TCP sessions
-#[derive(Default, Debug, Serialize)]
+#[derive(Clone, Default, Debug, Serialize)]
 pub struct TcpInfo {
     pub state: Option<TcpState>,
     pub wscale_orig: Option<u8>,
@@ -166,7 +166,7 @@ pub struct TcpInfo {
 }
 
 // TCPFlags contains additional information for TCP flags
-#[derive(Default, Debug, Serialize)]
+#[derive(Clone, Default, Debug, Serialize)]
 pub struct TcpFlags {
     pub flags: Option<u8>,
     pub mask: Option<u8>,
@@ -188,7 +188,7 @@ pub enum DccpState {
 }
 
 // DccpInfo contains additional information for DCCP sessions
-#[derive(Default, Debug, Serialize)]
+#[derive(Clone, Default, Debug, Serialize)]
 pub struct DccpInfo {
     pub state: Option<DccpState>,
     pub role: Option<u8>,
@@ -210,7 +210,7 @@ pub enum SctpState {
 }
 
 // contains additional information for SCTP sessions
-#[derive(Default, Debug, Serialize)]
+#[derive(Clone, Default, Debug, Serialize)]
 pub struct SctpInfo {
     pub state: Option<SctpState>,
     pub vtag_original: Option<u32>,
@@ -221,14 +221,14 @@ pub struct SctpInfo {
 pub struct SrcDst(pub Option<net::IpAddr>, pub Option<net::IpAddr>);
 
 // Helper contains additional information
-#[derive(Default, Debug, Serialize)]
+#[derive(Clone, Default, Debug, Serialize)]
 pub struct Helper {
     pub name: Option<String>,
     pub info: Option<String>,
 }
 
 // SeqAdj contains additional information about corrections
-#[derive(Default, Debug, Serialize)]
+#[derive(Clone, Default, Debug, Serialize)]
 pub struct SeqAdj {
     pub correction_pos: Option<u32>,
     pub offset_before: Option<u32>,
@@ -236,34 +236,34 @@ pub struct SeqAdj {
 }
 
 // Counter contains additional information about the traffic
-#[derive(Default, Debug, Serialize)]
+#[derive(Clone, Default, Debug, Serialize)]
 pub struct Counter {
     pub packets: Option<u64>,
     pub bytes: Option<u64>,
 }
 
 // SecCtx contains additional information about the security context
-#[derive(Default, Debug, Serialize)]
+#[derive(Clone, Default, Debug, Serialize)]
 pub struct SecCtx {
     pub name: Option<String>,
 }
 
 // Timestamp contains start and/or stop times
-#[derive(Default, Debug, Serialize)]
+#[derive(Clone, Default, Debug, Serialize)]
 pub struct Timestamp {
     pub start: Option<DateTime<Utc>>,
     pub end: Option<DateTime<Utc>>,
 }
 
 // NatInfo contains addition NAT information of a connection
-#[derive(Default, Debug, Serialize)]
+#[derive(Clone, Default, Debug, Serialize)]
 pub struct NatInfo {
     pub dir: Option<u32>,
     pub tuple: Option<IpTuple>,
 }
 
 // Exp extends the information of a connection by information from the expected table
-#[derive(Default, Debug, Serialize)]
+#[derive(Clone, Default, Debug, Serialize)]
 pub struct Exp {
     pub naster: Option<IpTuple>,
     pub tuple: Option<IpTuple>,
@@ -279,7 +279,7 @@ pub struct Exp {
 }
 
 // Nat contains information for source/destination NAT
-#[derive(Default, Debug, Serialize)]
+#[derive(Clone, Default, Debug, Serialize)]
 pub struct Nat {
     pub ip_min: Option<net::IpAddr>,
     pub ip_max: Option<net::IpAddr>,
