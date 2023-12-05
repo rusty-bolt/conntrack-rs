@@ -4,7 +4,7 @@
 use bitflags::bitflags;
 use chrono::prelude::*;
 use neli::neli_enum;
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 use std::{net, time::Duration};
 
 /// The `Flow` type contains all the information of a connection dumped from the
@@ -12,7 +12,7 @@ use std::{net, time::Duration};
 /// extended formats as well to allow for expansions on the library. Thus, all
 /// fields will be optional to support the various formats/options/configs
 /// that can be set by the linux kernel.
-#[derive(Clone, Default, Debug, Serialize)]
+#[derive(Clone, Default, Debug, Serialize, Deserialize)]
 pub struct Flow {
     /// Unique id assigned to this conntrack entry.
     pub id: Option<u32>,
@@ -51,7 +51,7 @@ pub struct Flow {
     pub exp: Option<Exp>,
 }
 #[neli_enum(serialized_type = "u8")]
-#[derive(Serialize)]
+#[derive(Serialize, Deserialize)]
 pub enum IpProto {
     /// Dummy protocol for TCP  
     Ip = 0u8,
@@ -110,7 +110,7 @@ pub enum IpProto {
 }
 
 /// IPTuple contains the source and destination IP as well as protocol information
-#[derive(Clone, Default, Debug, Serialize)]
+#[derive(Clone, Default, Debug, Serialize, Deserialize)]
 pub struct IpTuple {
     pub src: Option<net::IpAddr>,
     pub dst: Option<net::IpAddr>,
@@ -119,7 +119,7 @@ pub struct IpTuple {
 }
 
 /// ProtoTuple contains information about the used protocol
-#[derive(Clone, Default, Debug, Serialize)]
+#[derive(Clone, Default, Debug, Serialize, Deserialize)]
 pub struct ProtoTuple {
     pub number: Option<IpProto>,
     pub src_port: Option<u16>,
@@ -133,7 +133,7 @@ pub struct ProtoTuple {
 }
 
 /// ProtoInfo contains additional information for certain protocols
-#[derive(Clone, Default, Debug, Serialize)]
+#[derive(Clone, Default, Debug, Serialize, Deserialize)]
 pub struct ProtoInfo {
     pub tcp: Option<TcpInfo>,
     pub dccp: Option<DccpInfo>,
@@ -141,7 +141,7 @@ pub struct ProtoInfo {
 }
 
 #[neli_enum(serialized_type = "u8")]
-#[derive(Serialize)]
+#[derive(Serialize, Deserialize)]
 pub enum TcpState {
     None = 0u8,
     SynSent = 1u8,
@@ -156,7 +156,7 @@ pub enum TcpState {
 }
 
 // TCPInfo contains additional information for TCP sessions
-#[derive(Clone, Default, Debug, Serialize)]
+#[derive(Clone, Default, Debug, Serialize, Deserialize)]
 pub struct TcpInfo {
     pub state: Option<TcpState>,
     pub wscale_orig: Option<u8>,
@@ -166,14 +166,14 @@ pub struct TcpInfo {
 }
 
 // TCPFlags contains additional information for TCP flags
-#[derive(Clone, Default, Debug, Serialize)]
+#[derive(Clone, Default, Debug, Serialize, Deserialize)]
 pub struct TcpFlags {
     pub flags: Option<u8>,
     pub mask: Option<u8>,
 }
 
 #[neli_enum(serialized_type = "u8")]
-#[derive(Serialize)]
+#[derive(Serialize, Deserialize)]
 pub enum DccpState {
     None = 0u8,
     Request = 1u8,
@@ -188,7 +188,7 @@ pub enum DccpState {
 }
 
 // DccpInfo contains additional information for DCCP sessions
-#[derive(Clone, Default, Debug, Serialize)]
+#[derive(Clone, Default, Debug, Serialize, Deserialize)]
 pub struct DccpInfo {
     pub state: Option<DccpState>,
     pub role: Option<u8>,
@@ -196,7 +196,7 @@ pub struct DccpInfo {
 }
 
 #[neli_enum(serialized_type = "u8")]
-#[derive(Serialize)]
+#[derive(Serialize, Deserialize)]
 pub enum SctpState {
     None = 0u8,
     Closed = 1u8,
@@ -210,25 +210,25 @@ pub enum SctpState {
 }
 
 // contains additional information for SCTP sessions
-#[derive(Clone, Default, Debug, Serialize)]
+#[derive(Clone, Default, Debug, Serialize, Deserialize)]
 pub struct SctpInfo {
     pub state: Option<SctpState>,
     pub vtag_original: Option<u32>,
     pub vtag_reply: Option<u32>,
 }
 
-#[derive(Copy, Clone, Default, Debug, Serialize)]
+#[derive(Copy, Clone, Default, Debug, Serialize, Deserialize)]
 pub struct SrcDst(pub Option<net::IpAddr>, pub Option<net::IpAddr>);
 
 // Helper contains additional information
-#[derive(Clone, Default, Debug, Serialize)]
+#[derive(Clone, Default, Debug, Serialize, Deserialize)]
 pub struct Helper {
     pub name: Option<String>,
     pub info: Option<String>,
 }
 
 // SeqAdj contains additional information about corrections
-#[derive(Clone, Default, Debug, Serialize)]
+#[derive(Clone, Default, Debug, Serialize, Deserialize)]
 pub struct SeqAdj {
     pub correction_pos: Option<u32>,
     pub offset_before: Option<u32>,
@@ -236,34 +236,34 @@ pub struct SeqAdj {
 }
 
 // Counter contains additional information about the traffic
-#[derive(Clone, Default, Debug, Serialize)]
+#[derive(Clone, Default, Debug, Serialize, Deserialize)]
 pub struct Counter {
     pub packets: Option<u64>,
     pub bytes: Option<u64>,
 }
 
 // SecCtx contains additional information about the security context
-#[derive(Clone, Default, Debug, Serialize)]
+#[derive(Clone, Default, Debug, Serialize, Deserialize)]
 pub struct SecCtx {
     pub name: Option<String>,
 }
 
 // Timestamp contains start and/or stop times
-#[derive(Clone, Default, Debug, Serialize)]
+#[derive(Clone, Default, Debug, Serialize, Deserialize)]
 pub struct Timestamp {
     pub start: Option<DateTime<Utc>>,
     pub end: Option<DateTime<Utc>>,
 }
 
 // NatInfo contains addition NAT information of a connection
-#[derive(Clone, Default, Debug, Serialize)]
+#[derive(Clone, Default, Debug, Serialize, Deserialize)]
 pub struct NatInfo {
     pub dir: Option<u32>,
     pub tuple: Option<IpTuple>,
 }
 
 // Exp extends the information of a connection by information from the expected table
-#[derive(Clone, Default, Debug, Serialize)]
+#[derive(Clone, Default, Debug, Serialize, Deserialize)]
 pub struct Exp {
     pub naster: Option<IpTuple>,
     pub tuple: Option<IpTuple>,
@@ -279,7 +279,7 @@ pub struct Exp {
 }
 
 // Nat contains information for source/destination NAT
-#[derive(Clone, Default, Debug, Serialize)]
+#[derive(Clone, Default, Debug, Serialize, Deserialize)]
 pub struct Nat {
     pub ip_min: Option<net::IpAddr>,
     pub ip_max: Option<net::IpAddr>,
