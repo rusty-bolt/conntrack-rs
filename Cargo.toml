@@ -14,9 +14,10 @@ edition = "2021"
 thiserror = "1.0.40"
 chrono = "0.4.24"
 libc = "0.2.141"
-neli = "0.6.4"
 bitflags = "2.1.0"
 log = "0.4.17"
+
+neli = { git = "https://github.com/jbaublitz/neli.git", rev = "c6a18d78e33fbc7764c73cd19b165438dc53fe80" }
 
 [dev-dependencies]
 anyhow = "1.0.70"
