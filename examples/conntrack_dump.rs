@@ -11,15 +11,11 @@ fn main() -> std::result::Result<(), Box<dyn std::error::Error>> {
     env_logger::init_from_env(env);
 
     // Create the Conntrack table via netfilter socket syscall
-    let mut ct = Conntrack::connect()?.filter(
-        Filter::default().orig(
-            DirFilterBuilder::default()
-                .l4_proto(IpProto::Icmp)
-                .icmp_type(8)
-                .icmp_code(0)
-                .build()?,
-        ),
-    );
+    let mut builder = DirFilterBuilder::default();
+    builder.l4_proto(IpProto::Icmp).icmp_type(8).icmp_code(0);
+    let mut filter = Filter::default();
+    filter.orig(builder.build()?);
+    let mut ct = Conntrack::connect()?.filter(filter);
 
     // Dump conntrack table as a Vec<Flow>
     let flows = ct.dump()?;

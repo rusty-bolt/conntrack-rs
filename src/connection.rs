@@ -78,10 +78,10 @@ impl Conntrack {
     }
 }
 
-#[derive(Debug, Default)]
+#[derive(Debug, Default, PartialEq)]
 pub struct Filter {
-    orig: Option<DirFilter>,
-    reply: Option<DirFilter>,
+    orig: DirFilter,
+    reply: DirFilter,
 }
 
 impl Filter {
@@ -89,16 +89,10 @@ impl Filter {
         let Self { orig, reply } = self;
         let mut attrs = GenlBuffer::<ConntrackAttr, Buffer>::new();
         for (attr, tuple_attrs) in [
-            (
-                ConntrackAttr::CtaTupleOrig,
-                orig.as_ref().map(|x| x.attrs()).transpose()?,
-            ),
-            (
-                ConntrackAttr::CtaTupleReply,
-                reply.as_ref().map(|x| x.attrs()).transpose()?,
-            ),
+            (ConntrackAttr::CtaTupleOrig, orig.attrs()?),
+            (ConntrackAttr::CtaTupleReply, reply.attrs()?),
         ] {
-            if let Some(tuple_attrs) = tuple_attrs {
+            if !tuple_attrs.is_empty() {
                 attrs.push(
                     NlattrBuilder::default()
                         .nla_type(
@@ -115,53 +109,53 @@ impl Filter {
         {
             let mut filter_flag_attrs = GenlBuffer::<FilterFlagAttr, Buffer>::new();
             for (attr, flags) in [
-                (
-                    FilterFlagAttr::CtaFilterOrigFlags,
-                    orig.as_ref().map(|x| x.flags()),
-                ),
-                (
-                    FilterFlagAttr::CtaFilterReplyFlags,
-                    reply.as_ref().map(|x| x.flags()),
-                ),
+                (FilterFlagAttr::CtaFilterOrigFlags, orig.flags()),
+                (FilterFlagAttr::CtaFilterReplyFlags, reply.flags()),
             ] {
-                if let Some(flags) = flags {
-                    filter_flag_attrs.push(
-                        NlattrBuilder::default()
-                            .nla_type(AttrTypeBuilder::default().nla_type(attr).build()?)
-                            .nla_payload(flags.bits())
-                            .build()?,
-                    );
-                }
-            }
-            if !filter_flag_attrs.is_empty() {
-                attrs.push(
+                filter_flag_attrs.push(
                     NlattrBuilder::default()
-                        .nla_type(
-                            AttrTypeBuilder::default()
-                                .nla_type(ConntrackAttr::CtaFilter)
-                                .nla_nested(true)
-                                .build()?,
-                        )
-                        .nla_payload(filter_flag_attrs)
+                        .nla_type(AttrTypeBuilder::default().nla_type(attr).build()?)
+                        .nla_payload(flags.bits())
                         .build()?,
                 );
             }
+            attrs.push(
+                NlattrBuilder::default()
+                    .nla_type(
+                        AttrTypeBuilder::default()
+                            .nla_type(ConntrackAttr::CtaFilter)
+                            .nla_nested(true)
+                            .build()?,
+                    )
+                    .nla_payload(filter_flag_attrs)
+                    .build()?,
+            );
         }
         Ok(attrs)
     }
 
-    pub fn orig(mut self, value: DirFilter) -> Self {
-        self.orig = Some(value);
+    pub fn orig(&mut self, value: DirFilter) -> &mut Self {
+        self.orig = value;
         self
     }
 
-    pub fn reply(mut self, value: DirFilter) -> Self {
-        self.reply = Some(value);
+    pub fn with_orig(mut self, value: DirFilter) -> Self {
+        self.orig = value;
+        self
+    }
+
+    pub fn reply(&mut self, value: DirFilter) -> &mut Self {
+        self.reply = value;
+        self
+    }
+
+    pub fn with_reply(mut self, value: DirFilter) -> Self {
+        self.reply = value;
         self
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Default, PartialEq)]
 pub struct DirFilter {
     ipv4_src: Option<Ipv4Addr>,
     ipv4_dst: Option<Ipv4Addr>,
@@ -455,47 +449,92 @@ impl DirFilterBuilder {
         })
     }
 
-    pub fn ipv4_src(mut self, value: impl Into<Ipv4Addr>) -> Self {
+    pub fn ipv4_src(&mut self, value: impl Into<Ipv4Addr>) -> &mut Self {
         self.ipv4_src = Some(value.into());
         self
     }
 
-    pub fn ipv4_dst(mut self, value: impl Into<Ipv4Addr>) -> Self {
+    pub fn with_ipv4_src(mut self, value: impl Into<Ipv4Addr>) ->  Self {
+        self.ipv4_src = Some(value.into());
+        self
+    }
+
+    pub fn ipv4_dst(&mut self, value: impl Into<Ipv4Addr>) -> &mut Self {
         self.ipv4_dst = Some(value.into());
         self
     }
 
-    pub fn l4_proto(mut self, value: impl Into<IpProto>) -> Self {
+    pub fn with_ipv4_dst(mut self, value: impl Into<Ipv4Addr>) -> Self {
+        self.ipv4_dst = Some(value.into());
+        self
+    }
+
+    pub fn l4_proto(&mut self, value: impl Into<IpProto>) -> &mut Self {
         self.l4_proto = Some(value.into());
         self
     }
 
-    pub fn l4_src_port(mut self, value: u16) -> Self {
+    pub fn with_l4_proto(mut self, value: impl Into<IpProto>) -> Self {
+        self.l4_proto = Some(value.into());
+        self
+    }
+
+    pub fn l4_src_port(&mut self, value: u16) -> &mut Self {
         self.l4_src_port = Some(value);
         self
     }
 
-    pub fn l4_dst_port(mut self, value: u16) -> Self {
+    pub fn with_l4_src_port(mut self, value: u16) -> Self {
+        self.l4_src_port = Some(value);
+        self
+    }
+
+    pub fn l4_dst_port(&mut self, value: u16) -> &mut Self {
         self.l4_dst_port = Some(value);
         self
     }
 
-    pub fn icmp_type(mut self, value: u8) -> Self {
+    pub fn with_l4_dst_port(mut self, value: u16) -> Self {
+        self.l4_dst_port = Some(value);
+        self
+    }
+
+    pub fn icmp_type(&mut self, value: u8) -> &mut Self {
         self.icmp_type = Some(value);
         self
     }
 
-    pub fn icmp_code(mut self, value: u8) -> Self {
+    pub fn with_icmp_type(mut self, value: u8) -> Self {
+        self.icmp_type = Some(value);
+        self
+    }
+
+    pub fn icmp_code(&mut self, value: u8) -> &mut Self {
         self.icmp_code = Some(value);
         self
     }
 
-    pub fn icmp_id(mut self, value: u16) -> Self {
+    pub fn with_icmp_code(mut self, value: u8) -> Self {
+        self.icmp_code = Some(value);
+        self
+    }
+
+    pub fn icmp_id(&mut self, value: u16) -> &mut Self {
         self.icmp_id = Some(value);
         self
     }
 
-    pub fn zone(mut self, value: u16) -> Self {
+    pub fn with_icmp_id(mut self, value: u16) -> Self {
+        self.icmp_id = Some(value);
+        self
+    }
+
+    pub fn zone(&mut self, value: u16) -> &mut Self {
+        self.zone = Some(value);
+        self
+    }
+
+    pub fn with_zone(mut self, value: u16) -> Self {
         self.zone = Some(value);
         self
     }

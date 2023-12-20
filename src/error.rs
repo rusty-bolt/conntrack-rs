@@ -41,7 +41,7 @@ impl<M: Debug> From<neli::err::Nlmsgerr<M>> for Error {
     }
 }
 
-#[derive(Debug, thiserror::Error)]
+#[derive(Debug, PartialEq, thiserror::Error)]
 pub enum DirFilterBuilderError {
     MissingRequiredParameter {
         parameter: &'static str,
