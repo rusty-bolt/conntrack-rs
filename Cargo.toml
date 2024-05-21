@@ -11,16 +11,16 @@ readme = "README.md"
 edition = "2021"
 
 [dependencies]
-thiserror = "1.0.40"
-chrono = { version = "0.4.24", features = ["serde"] }
-libc = "0.2.141"
+thiserror = "1.0.61"
+chrono = { version = "0.4.38", features = ["serde"] }
+libc = "0.2.155"
 neli = "0.6.4"
-bitflags = "2.1.0"
-log = "0.4.17"
-serde = { version = "1.0.193", features = ["derive"] }
+bitflags = "2.5.0"
+log = "0.4.21"
+serde = { version = "1.0.202", features = ["derive"] }
 
 [dev-dependencies]
-anyhow = "1.0.70"
+anyhow = "1.0.86"
 env_logger = "0.11.3"
 
 [[example]]
