@@ -1,6 +1,6 @@
 [package]
 name = "conntrack"
-version = "0.1.1"
+version = "0.1.2"
 authors = ["Matt Bolt <mbolt35@gmail.com>"]
 repository = "https://github.com/rusty-bolt/conntrack-rs"
 description = "Netfilter Conntrack"
@@ -21,7 +21,7 @@ serde = { version = "1.0.193", features = ["derive"] }
 
 [dev-dependencies]
 anyhow = "1.0.70"
-env_logger = "0.10.0"
+env_logger = "0.11.3"
 
 [[example]]
 name = "conntrack-dump"
