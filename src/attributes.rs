@@ -224,6 +224,12 @@ pub enum ExpectStatsAttr {
     CtaStatsExpDelete = 3u16,
 }
 
+#[neli_enum(serialized_type = "u16")]
+pub enum FilterFlagAttr {
+    CtaFilterOrigFlags = 1,
+    CtaFilterReplyFlags = 2,
+}
+
 impl NlAttrType for ConntrackAttr {}
 impl NlAttrType for TupleAttr {}
 impl NlAttrType for IpTupleAttr {}
@@ -244,3 +250,4 @@ impl NlAttrType for SynProxyAttr {}
 impl NlAttrType for CpuStatsAttr {}
 impl NlAttrType for ExpectNatAttr {}
 impl NlAttrType for NatAttr {}
+impl NlAttrType for FilterFlagAttr {}

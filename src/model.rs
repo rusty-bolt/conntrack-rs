@@ -83,6 +83,8 @@ pub enum IpProto {
     Gre = 47u8,
     /// Encapsulation Security Payload protocol  
     Esp = 50u8,
+    /// ICMPv6
+    Icmpv6 = 58,
     /// Authentication Header protocol  
     Ah = 51u8,
     /// Multicast Transport Protocol    
@@ -306,5 +308,24 @@ bitflags! {
         const StatusUntracked = 1 << 12;
         const StatusHelper = 1 << 13;
         const StatusOffload = 1 << 14;
+    }
+}
+
+bitflags! {
+    /// The filter flags. CTA_FILTER_FLAG_CTA_*
+    #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
+    pub struct FilterFlags: u32 {
+        const IpSrc = 1;
+        const IpDst = 1 << 1;
+        const TupleZone = 1 << 2;
+        const ProtoNum = 1 << 3;
+        const ProtoSrcPort = 1 << 4;
+        const ProtoDstPort = 1 << 5;
+        const ProtoIcmpType = 1 << 6;
+        const ProtoIcmpCode = 1 << 7;
+        const ProtoIcmpId = 1 << 8;
+        const ProtoIcmpv6Type = 1 << 9;
+        const ProtoIcmpv6Code = 1 << 10;
+        const ProtoIcmpv6Id = 1 << 1;
     }
 }
