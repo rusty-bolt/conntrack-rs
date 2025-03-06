@@ -429,22 +429,12 @@ impl<'a> AttrDecoder<'a, TimestampAttr, Timestamp> for Timestamp {
         for inner_attr in attr_handle.iter() {
             match &inner_attr.nla_type.nla_type {
                 TimestampAttr::CtaTimestampStart => {
-                    // FIXME: Timestamp Parser
                     let ts_start = u64::from_be(inner_attr.get_payload_as::<u64>()?);
-                    if let chrono::offset::LocalResult::Single(start) =
-                        Utc.timestamp_millis_opt(ts_start as i64)
-                    {
-                        timestamp.start = Some(start);
-                    }
+                    timestamp.start = Some(Utc.timestamp_nanos(ts_start as i64));
                 }
                 TimestampAttr::CtaTimestampStop => {
-                    // FIXME: Timestamp Parser
                     let ts_end = u64::from_be(inner_attr.get_payload_as::<u64>()?);
-                    if let chrono::offset::LocalResult::Single(end) =
-                        Utc.timestamp_millis_opt(ts_end as i64)
-                    {
-                        timestamp.end = Some(end);
-                    }
+                    timestamp.end = Some(Utc.timestamp_nanos(ts_end as i64));
                 }
                 other => {
                     log::warn!("Failed to handle attribute: {:?}", other);
