@@ -3,10 +3,11 @@
 
 use neli::{
     consts::{nl::*, socket::*},
-    genl::Genlmsghdr,
-    nl::{NlPayload, Nlmsghdr},
-    socket::NlSocketHandle,
+    genl::{Genlmsghdr, GenlmsghdrBuilder},
+    nl::{NlPayload, Nlmsghdr, NlmsghdrBuilder},
+    socket::synchronous::NlSocketHandle,
     types::{Buffer, GenlBuffer},
+    utils::Groups,
 };
 
 use crate::attributes::*;
@@ -25,39 +26,36 @@ impl Conntrack {
     /// This method opens a netfilter socket using a `socket()` syscall, and
     /// returns the `Conntrack` instance on success.
     pub fn connect() -> Result<Self> {
-        let socket = NlSocketHandle::connect(NlFamily::Netfilter, Some(0), &[])?;
+        let socket = NlSocketHandle::connect(NlFamily::Netfilter, Some(0), Groups::empty())?;
         Ok(Self { socket })
     }
 
     /// The dump call will list all connection tracking for the `Conntrack` table as a
     /// `Vec<Flow>` instances.
     pub fn dump(&mut self) -> Result<Vec<Flow>> {
-        let genlhdr = Genlmsghdr::new(
-            0u8,
-            libc::NFNETLINK_V0 as u8,
-            GenlBuffer::<ConntrackAttr, Buffer>::new(),
-        );
+        let genlhdr = GenlmsghdrBuilder::default()
+            .cmd(0u8)
+            .version(libc::NFNETLINK_V0 as u8)
+            .attrs(GenlBuffer::<ConntrackAttr, Buffer>::new())
+            .build()?;
 
-        self.socket.send({
-            let len = None;
-            let seq = None;
-            let pid = None;
+        let msg = NlmsghdrBuilder::default()
+            .nl_type(CtNetlinkMessage::Conntrack)
+            .nl_flags(NlmF::REQUEST | NlmF::DUMP)
+            .nl_payload(NlPayload::Payload(genlhdr))
+            .build()?;
 
-            let nl_type = CtNetlinkMessage::Conntrack;
-            let flags = NlmFFlags::new(&[NlmF::Request, NlmF::Dump]);
-            let payload = NlPayload::Payload(genlhdr);
-
-            Nlmsghdr::new(len, nl_type, flags, seq, pid, payload)
-        })?;
+        self.socket.send(&msg)?;
 
         let mut flows = Vec::new();
-        for response in self
+        let (recv_iter, _) = self
             .socket
-            .iter::<CtNetlinkMessage, Genlmsghdr<u8, ConntrackAttr>>(false)
-        {
-            let result: Nlmsghdr<CtNetlinkMessage, Genlmsghdr<u8, ConntrackAttr>> = response?;
-            if let Some(message) = result.nl_payload.get_payload() {
-                let handle = message.get_attr_handle();
+            .recv::<CtNetlinkMessage, Genlmsghdr<u8, ConntrackAttr>>()?;
+
+        for result in recv_iter {
+            let result: Nlmsghdr<CtNetlinkMessage, Genlmsghdr<u8, ConntrackAttr>> = result?;
+            if let NlPayload::Payload(message) = result.nl_payload() {
+                let handle = message.attrs().get_attr_handle();
 
                 flows.push(Flow::decode(handle)?);
             }

@@ -104,7 +104,7 @@ impl<'a> AttrDecoder<'a, ConntrackAttr, Flow> for Flow {
         let mut flow = Flow::default();
 
         for attr in attr_handle.iter() {
-            match &attr.nla_type.nla_type {
+            match &attr.nla_type().nla_type() {
                 ConntrackAttr::CtaId => {
                     flow.id = Some(u32::decode(attr)?);
                 }
@@ -188,7 +188,7 @@ impl<'a> AttrDecoder<'a, ConntrackAttr, Flow> for Flow {
                     flow.helper = Some(Helper::decode(helper_attr)?);
                 }
                 other => {
-                    log::warn!("Failed to handle attribute: {:?}", other);
+                    log::warn!("Failed to handle attribute: {other:?}");
                 }
             }
         }
@@ -202,7 +202,7 @@ impl<'a> AttrDecoder<'a, NatAttr, Nat> for Nat {
         let mut nat = Nat::default();
 
         for inner_attr in attr_handle.iter() {
-            match &inner_attr.nla_type.nla_type {
+            match &inner_attr.nla_type().nla_type() {
                 NatAttr::CtaNatProto => {
                     let proto_tuple_attr = inner_attr.get_attr_handle::<ProtoTupleAttr>()?;
                     nat.proto = Some(ProtoTuple::decode(proto_tuple_attr)?);
@@ -220,7 +220,7 @@ impl<'a> AttrDecoder<'a, NatAttr, Nat> for Nat {
                     nat.ip_max = Some(IpAddr::decode_v6(inner_attr)?);
                 }
                 other => {
-                    log::warn!("Failed to handle attribute: {:?}", other);
+                    log::warn!("Failed to handle attribute: {other:?}");
                 }
             }
         }
@@ -234,17 +234,19 @@ impl<'a> AttrDecoder<'a, HelperAttr, Helper> for Helper {
         let mut helper = Helper::default();
 
         for inner_attr in attr_handle.iter() {
-            match &inner_attr.nla_type.nla_type {
+            match &inner_attr.nla_type().nla_type() {
                 HelperAttr::CtaHelpName => {
-                    let name = String::from_utf8_lossy(inner_attr.nla_payload.as_ref()).to_string();
+                    let name =
+                        String::from_utf8_lossy(inner_attr.nla_payload().as_ref()).to_string();
                     helper.name = Some(name);
                 }
                 HelperAttr::CtaHelpInfo => {
-                    let info = String::from_utf8_lossy(inner_attr.nla_payload.as_ref()).to_string();
+                    let info =
+                        String::from_utf8_lossy(inner_attr.nla_payload().as_ref()).to_string();
                     helper.info = Some(info);
                 }
                 other => {
-                    log::warn!("Failed to handle attribute: {:?}", other);
+                    log::warn!("Failed to handle attribute: {other:?}");
                 }
             }
         }
@@ -258,13 +260,14 @@ impl<'a> AttrDecoder<'a, SecCtxAttr, SecCtx> for SecCtx {
         let mut sec_ctx = SecCtx::default();
 
         for inner_attr in attr_handle.iter() {
-            match &inner_attr.nla_type.nla_type {
+            match &inner_attr.nla_type().nla_type() {
                 SecCtxAttr::CtaSecCtxName => {
-                    let name = String::from_utf8_lossy(inner_attr.nla_payload.as_ref()).to_string();
+                    let name =
+                        String::from_utf8_lossy(inner_attr.nla_payload().as_ref()).to_string();
                     sec_ctx.name = Some(name);
                 }
                 other => {
-                    log::warn!("Failed to handle attribute: {:?}", other);
+                    log::warn!("Failed to handle attribute: {other:?}");
                 }
             }
         }
@@ -278,7 +281,7 @@ impl<'a> AttrDecoder<'a, SeqAdjAttr, SeqAdj> for SeqAdj {
         let mut seq_adj = SeqAdj::default();
 
         for inner_attr in attr_handle.iter() {
-            match &inner_attr.nla_type.nla_type {
+            match &inner_attr.nla_type().nla_type() {
                 SeqAdjAttr::CtaSeqAdjCorrectionPos => {
                     seq_adj.correction_pos = Some(u32::decode(inner_attr)?);
                 }
@@ -289,7 +292,7 @@ impl<'a> AttrDecoder<'a, SeqAdjAttr, SeqAdj> for SeqAdj {
                     seq_adj.offset_before = Some(u32::decode(inner_attr)?);
                 }
                 other => {
-                    log::warn!("Failed to handle attribute: {:?}", other);
+                    log::warn!("Failed to handle attribute: {other:?}");
                 }
             }
         }
@@ -302,7 +305,7 @@ impl<'a> AttrDecoder<'a, ProtoInfoAttr, ProtoInfo> for ProtoInfo {
         let mut proto_info = ProtoInfo::default();
 
         for inner_attr in attr_handle.iter() {
-            match &inner_attr.nla_type.nla_type {
+            match &inner_attr.nla_type().nla_type() {
                 ProtoInfoAttr::CtaProtoInfoTcp => {
                     let tcp_info_attr = inner_attr.get_attr_handle::<TcpInfoAttr>()?;
                     proto_info.tcp = Some(TcpInfo::decode(tcp_info_attr)?);
@@ -316,7 +319,7 @@ impl<'a> AttrDecoder<'a, ProtoInfoAttr, ProtoInfo> for ProtoInfo {
                     proto_info.sctp = Some(SctpInfo::decode(sctp_info_attr)?);
                 }
                 other => {
-                    log::warn!("Failed to handle attribute: {:?}", other);
+                    log::warn!("Failed to handle attribute: {other:?}");
                 }
             }
         }
@@ -330,12 +333,12 @@ impl<'a> AttrDecoder<'a, TcpInfoAttr, TcpInfo> for TcpInfo {
         let mut tcp_info = TcpInfo::default();
 
         for inner_attr in attr_handle.iter() {
-            match &inner_attr.nla_type.nla_type {
+            match &inner_attr.nla_type().nla_type() {
                 TcpInfoAttr::CtaProtoInfoTcpState => {
                     tcp_info.state = Some(TcpState::from(u8::decode(inner_attr)?));
                 }
                 TcpInfoAttr::CtaProtoInfoTcpFlagsOriginal => {
-                    let bytes = Vec::<u8>::from(inner_attr.nla_payload.as_ref());
+                    let bytes = Vec::<u8>::from(inner_attr.nla_payload().as_ref());
                     if bytes.len() != 2 {
                         let flags = TcpFlags {
                             flags: Some(bytes[0]),
@@ -345,7 +348,7 @@ impl<'a> AttrDecoder<'a, TcpInfoAttr, TcpInfo> for TcpInfo {
                     }
                 }
                 TcpInfoAttr::CtaProtoInfoTcpFlagsReply => {
-                    let bytes = Vec::<u8>::from(inner_attr.nla_payload.as_ref());
+                    let bytes = Vec::<u8>::from(inner_attr.nla_payload().as_ref());
                     if bytes.len() != 2 {
                         let flags = TcpFlags {
                             flags: Some(bytes[0]),
@@ -361,7 +364,7 @@ impl<'a> AttrDecoder<'a, TcpInfoAttr, TcpInfo> for TcpInfo {
                     tcp_info.wscale_repl = Some(u8::decode(inner_attr)?);
                 }
                 other => {
-                    log::warn!("Failed to handle attribute: {:?}", other);
+                    log::warn!("Failed to handle attribute: {other:?}");
                 }
             }
         }
@@ -375,7 +378,7 @@ impl<'a> AttrDecoder<'a, DccpInfoAttr, DccpInfo> for DccpInfo {
         let mut dccp_info = DccpInfo::default();
 
         for inner_attr in attr_handle.iter() {
-            match &inner_attr.nla_type.nla_type {
+            match &inner_attr.nla_type().nla_type() {
                 DccpInfoAttr::CtaProtoInfoDccpState => {
                     let state = u8::decode(inner_attr)?;
                     dccp_info.state = Some(DccpState::from(state));
@@ -387,7 +390,7 @@ impl<'a> AttrDecoder<'a, DccpInfoAttr, DccpInfo> for DccpInfo {
                     dccp_info.handshake_seq = Some(u64::decode(inner_attr)?);
                 }
                 other => {
-                    log::warn!("Failed to handle attribute: {:?}", other);
+                    log::warn!("Failed to handle attribute: {other:?}");
                 }
             }
         }
@@ -401,7 +404,7 @@ impl<'a> AttrDecoder<'a, SctpInfoAttr, SctpInfo> for SctpInfo {
         let mut sctp_info = SctpInfo::default();
 
         for inner_attr in attr_handle.iter() {
-            match &inner_attr.nla_type.nla_type {
+            match &inner_attr.nla_type().nla_type() {
                 SctpInfoAttr::CtaProtoInfoSctpState => {
                     let state = u8::decode(inner_attr)?;
                     sctp_info.state = Some(SctpState::from(state));
@@ -413,7 +416,7 @@ impl<'a> AttrDecoder<'a, SctpInfoAttr, SctpInfo> for SctpInfo {
                     sctp_info.vtag_reply = Some(u32::decode(inner_attr)?);
                 }
                 other => {
-                    log::warn!("Failed to handle attribute: {:?}", other);
+                    log::warn!("Failed to handle attribute: {other:?}");
                 }
             }
         }
@@ -427,7 +430,7 @@ impl<'a> AttrDecoder<'a, TimestampAttr, Timestamp> for Timestamp {
         let mut timestamp = Timestamp::default();
 
         for inner_attr in attr_handle.iter() {
-            match &inner_attr.nla_type.nla_type {
+            match &inner_attr.nla_type().nla_type() {
                 TimestampAttr::CtaTimestampStart => {
                     let ts_start = u64::from_be(inner_attr.get_payload_as::<u64>()?);
                     timestamp.start = Some(Utc.timestamp_nanos(ts_start as i64));
@@ -437,7 +440,7 @@ impl<'a> AttrDecoder<'a, TimestampAttr, Timestamp> for Timestamp {
                     timestamp.end = Some(Utc.timestamp_nanos(ts_end as i64));
                 }
                 other => {
-                    log::warn!("Failed to handle attribute: {:?}", other);
+                    log::warn!("Failed to handle attribute: {other:?}");
                 }
             }
         }
@@ -451,7 +454,7 @@ impl<'a> AttrDecoder<'a, CounterAttr, Counter> for Counter {
         let mut counter = Counter::default();
 
         for inner_attr in attr_handle.iter() {
-            match &inner_attr.nla_type.nla_type {
+            match &inner_attr.nla_type().nla_type() {
                 CounterAttr::CtaCountersPackets => {
                     counter.packets = Some(u64::decode(inner_attr)?);
                 }
@@ -467,7 +470,7 @@ impl<'a> AttrDecoder<'a, CounterAttr, Counter> for Counter {
                     counter.bytes = Some(bytes as u64);
                 }
                 other => {
-                    log::warn!("Failed to handle attribute: {:?}", other);
+                    log::warn!("Failed to handle attribute: {other:?}");
                 }
             }
         }
@@ -481,7 +484,7 @@ impl<'a> AttrDecoder<'a, TupleAttr, IpTuple> for IpTuple {
         let mut ip_tuple = IpTuple::default();
 
         for inner_attr in attr_handle.iter() {
-            match &inner_attr.nla_type.nla_type {
+            match &inner_attr.nla_type().nla_type() {
                 TupleAttr::CtaTupleIp => {
                     let ip_tuple_attr = inner_attr.get_attr_handle::<IpTupleAttr>()?;
                     SrcDst(ip_tuple.src, ip_tuple.dst) = SrcDst::decode(ip_tuple_attr)?;
@@ -494,7 +497,7 @@ impl<'a> AttrDecoder<'a, TupleAttr, IpTuple> for IpTuple {
                     ip_tuple.zone = Some(u16::decode(inner_attr)?);
                 }
                 other => {
-                    log::warn!("Failed to handle attribute: {:?}", other);
+                    log::warn!("Failed to handle attribute: {other:?}");
                 }
             }
         }
@@ -508,7 +511,7 @@ impl<'a> AttrDecoder<'a, IpTupleAttr, SrcDst> for SrcDst {
         let mut src_dst = SrcDst::default();
 
         for ip_inner in attr_handle.iter() {
-            match &ip_inner.nla_type.nla_type {
+            match &ip_inner.nla_type().nla_type() {
                 IpTupleAttr::CtaIpv4Src => {
                     src_dst.0 = Some(IpAddr::decode_v4(ip_inner)?);
                 }
@@ -522,7 +525,7 @@ impl<'a> AttrDecoder<'a, IpTupleAttr, SrcDst> for SrcDst {
                     src_dst.1 = Some(IpAddr::decode_v6(ip_inner)?);
                 }
                 other => {
-                    log::warn!("Failed to handle attribute: {:?}", other);
+                    log::warn!("Failed to handle attribute: {other:?}");
                 }
             }
         }
@@ -536,7 +539,7 @@ impl<'a> AttrDecoder<'a, ProtoTupleAttr, ProtoTuple> for ProtoTuple {
         let mut tuple = ProtoTuple::default();
 
         for attr in attr_handle.iter() {
-            match &attr.nla_type.nla_type {
+            match &attr.nla_type().nla_type() {
                 ProtoTupleAttr::CtaProtoNum => {
                     tuple.number = Some(IpProto::from(u8::decode(attr)?));
                 }
@@ -565,7 +568,7 @@ impl<'a> AttrDecoder<'a, ProtoTupleAttr, ProtoTuple> for ProtoTuple {
                     tuple.icmpv6_code = Some(u8::decode(attr)?);
                 }
                 other => {
-                    log::warn!("Failed to handle attribute: {:?}", other);
+                    log::warn!("Failed to handle attribute: {other:?}");
                 }
             }
         }

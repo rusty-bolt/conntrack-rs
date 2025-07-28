@@ -1,6 +1,6 @@
 [package]
 name = "conntrack"
-version = "0.1.2"
+version = "0.1.3"
 authors = ["Matt Bolt <mbolt35@gmail.com>"]
 repository = "https://github.com/rusty-bolt/conntrack-rs"
 description = "Netfilter Conntrack"
@@ -8,20 +8,20 @@ categories = ["network-programming"]
 keywords = ["conntrack", "netfilter-conntrack"]
 license-file = "LICENSE"
 readme = "README.md"
-edition = "2021"
+edition = "2024"
 
 [dependencies]
-thiserror = "2.0.11"
-chrono = { version = "0.4.38", features = ["serde"] }
-libc = "0.2.155"
-neli = "0.6.4"
-bitflags = "2.5.0"
-log = "0.4.21"
-serde = { version = "1.0.202", features = ["derive"] }
+thiserror = "2.0.12"
+chrono = { version = "0.4.41", features = ["serde"] }
+libc = "0.2.174"
+neli = "0.7.1"
+bitflags = "2.9.1"
+log = "0.4.27"
+serde = { version = "1.0.219", features = ["derive"] }
 
 [dev-dependencies]
-anyhow = "1.0.86"
-env_logger = "0.11.3"
+anyhow = "1.0.98"
+env_logger = "0.11.8"
 
 [[example]]
 name = "conntrack-dump"
