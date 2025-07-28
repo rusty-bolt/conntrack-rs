@@ -18,10 +18,19 @@ pub enum Error {
 
     #[error(transparent)]
     Serialization(#[from] neli::err::SerError),
+
+    #[error(transparent)]
+    Socket(#[from] neli::err::SocketError),
+
+    #[error(transparent)]
+    GenlBuilder(#[from] neli::genl::GenlmsghdrBuilderError),
+
+    #[error(transparent)]
+    NlBuilder(#[from] neli::nl::NlmsghdrBuilderError),
 }
 
-impl<T: Debug, P: Debug> From<neli::err::NlError<T, P>> for Error {
-    fn from(value: neli::err::NlError<T, P>) -> Self {
-        Self::Netlink(format!("{:?}", value))
+impl<T: Debug, P: Debug> From<neli::err::RouterError<T, P>> for Error {
+    fn from(value: neli::err::RouterError<T, P>) -> Self {
+        Self::Netlink(format!("{value:?}"))
     }
 }
