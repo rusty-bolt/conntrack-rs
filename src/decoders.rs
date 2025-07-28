@@ -236,11 +236,13 @@ impl<'a> AttrDecoder<'a, HelperAttr, Helper> for Helper {
         for inner_attr in attr_handle.iter() {
             match &inner_attr.nla_type().nla_type() {
                 HelperAttr::CtaHelpName => {
-                    let name = String::from_utf8_lossy(inner_attr.nla_payload().as_ref()).to_string();
+                    let name =
+                        String::from_utf8_lossy(inner_attr.nla_payload().as_ref()).to_string();
                     helper.name = Some(name);
                 }
                 HelperAttr::CtaHelpInfo => {
-                    let info = String::from_utf8_lossy(inner_attr.nla_payload().as_ref()).to_string();
+                    let info =
+                        String::from_utf8_lossy(inner_attr.nla_payload().as_ref()).to_string();
                     helper.info = Some(info);
                 }
                 other => {
@@ -260,7 +262,8 @@ impl<'a> AttrDecoder<'a, SecCtxAttr, SecCtx> for SecCtx {
         for inner_attr in attr_handle.iter() {
             match &inner_attr.nla_type().nla_type() {
                 SecCtxAttr::CtaSecCtxName => {
-                    let name = String::from_utf8_lossy(inner_attr.nla_payload().as_ref()).to_string();
+                    let name =
+                        String::from_utf8_lossy(inner_attr.nla_payload().as_ref()).to_string();
                     sec_ctx.name = Some(name);
                 }
                 other => {
