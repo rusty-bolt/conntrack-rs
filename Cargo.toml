@@ -8,7 +8,7 @@ categories = ["network-programming"]
 keywords = ["conntrack", "netfilter-conntrack"]
 license-file = "LICENSE"
 readme = "README.md"
-edition = "2024"
+edition = "2021"
 
 [dependencies]
 thiserror = "2.0.12"
