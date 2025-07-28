@@ -188,7 +188,7 @@ impl<'a> AttrDecoder<'a, ConntrackAttr, Flow> for Flow {
                     flow.helper = Some(Helper::decode(helper_attr)?);
                 }
                 other => {
-                    log::warn!("Failed to handle attribute: {:?}", other);
+                    log::warn!("Failed to handle attribute: {other:?}");
                 }
             }
         }
@@ -220,7 +220,7 @@ impl<'a> AttrDecoder<'a, NatAttr, Nat> for Nat {
                     nat.ip_max = Some(IpAddr::decode_v6(inner_attr)?);
                 }
                 other => {
-                    log::warn!("Failed to handle attribute: {:?}", other);
+                    log::warn!("Failed to handle attribute: {other:?}");
                 }
             }
         }
@@ -244,7 +244,7 @@ impl<'a> AttrDecoder<'a, HelperAttr, Helper> for Helper {
                     helper.info = Some(info);
                 }
                 other => {
-                    log::warn!("Failed to handle attribute: {:?}", other);
+                    log::warn!("Failed to handle attribute: {other:?}");
                 }
             }
         }
@@ -264,7 +264,7 @@ impl<'a> AttrDecoder<'a, SecCtxAttr, SecCtx> for SecCtx {
                     sec_ctx.name = Some(name);
                 }
                 other => {
-                    log::warn!("Failed to handle attribute: {:?}", other);
+                    log::warn!("Failed to handle attribute: {other:?}");
                 }
             }
         }
@@ -289,7 +289,7 @@ impl<'a> AttrDecoder<'a, SeqAdjAttr, SeqAdj> for SeqAdj {
                     seq_adj.offset_before = Some(u32::decode(inner_attr)?);
                 }
                 other => {
-                    log::warn!("Failed to handle attribute: {:?}", other);
+                    log::warn!("Failed to handle attribute: {other:?}");
                 }
             }
         }
@@ -316,7 +316,7 @@ impl<'a> AttrDecoder<'a, ProtoInfoAttr, ProtoInfo> for ProtoInfo {
                     proto_info.sctp = Some(SctpInfo::decode(sctp_info_attr)?);
                 }
                 other => {
-                    log::warn!("Failed to handle attribute: {:?}", other);
+                    log::warn!("Failed to handle attribute: {other:?}");
                 }
             }
         }
@@ -361,7 +361,7 @@ impl<'a> AttrDecoder<'a, TcpInfoAttr, TcpInfo> for TcpInfo {
                     tcp_info.wscale_repl = Some(u8::decode(inner_attr)?);
                 }
                 other => {
-                    log::warn!("Failed to handle attribute: {:?}", other);
+                    log::warn!("Failed to handle attribute: {other:?}");
                 }
             }
         }
@@ -387,7 +387,7 @@ impl<'a> AttrDecoder<'a, DccpInfoAttr, DccpInfo> for DccpInfo {
                     dccp_info.handshake_seq = Some(u64::decode(inner_attr)?);
                 }
                 other => {
-                    log::warn!("Failed to handle attribute: {:?}", other);
+                    log::warn!("Failed to handle attribute: {other:?}");
                 }
             }
         }
@@ -413,7 +413,7 @@ impl<'a> AttrDecoder<'a, SctpInfoAttr, SctpInfo> for SctpInfo {
                     sctp_info.vtag_reply = Some(u32::decode(inner_attr)?);
                 }
                 other => {
-                    log::warn!("Failed to handle attribute: {:?}", other);
+                    log::warn!("Failed to handle attribute: {other:?}");
                 }
             }
         }
@@ -447,7 +447,7 @@ impl<'a> AttrDecoder<'a, TimestampAttr, Timestamp> for Timestamp {
                     }
                 }
                 other => {
-                    log::warn!("Failed to handle attribute: {:?}", other);
+                    log::warn!("Failed to handle attribute: {other:?}");
                 }
             }
         }
@@ -477,7 +477,7 @@ impl<'a> AttrDecoder<'a, CounterAttr, Counter> for Counter {
                     counter.bytes = Some(bytes as u64);
                 }
                 other => {
-                    log::warn!("Failed to handle attribute: {:?}", other);
+                    log::warn!("Failed to handle attribute: {other:?}");
                 }
             }
         }
@@ -504,7 +504,7 @@ impl<'a> AttrDecoder<'a, TupleAttr, IpTuple> for IpTuple {
                     ip_tuple.zone = Some(u16::decode(inner_attr)?);
                 }
                 other => {
-                    log::warn!("Failed to handle attribute: {:?}", other);
+                    log::warn!("Failed to handle attribute: {other:?}");
                 }
             }
         }
@@ -532,7 +532,7 @@ impl<'a> AttrDecoder<'a, IpTupleAttr, SrcDst> for SrcDst {
                     src_dst.1 = Some(IpAddr::decode_v6(ip_inner)?);
                 }
                 other => {
-                    log::warn!("Failed to handle attribute: {:?}", other);
+                    log::warn!("Failed to handle attribute: {other:?}");
                 }
             }
         }
@@ -575,7 +575,7 @@ impl<'a> AttrDecoder<'a, ProtoTupleAttr, ProtoTuple> for ProtoTuple {
                     tuple.icmpv6_code = Some(u8::decode(attr)?);
                 }
                 other => {
-                    log::warn!("Failed to handle attribute: {:?}", other);
+                    log::warn!("Failed to handle attribute: {other:?}");
                 }
             }
         }
