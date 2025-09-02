@@ -4,8 +4,8 @@
 use neli::{
     consts::{nl::*, socket::*},
     genl::{Genlmsghdr, GenlmsghdrBuilder},
-    nl::{NlPayload, Nlmsghdr, NlmsghdrBuilder},
-    socket::synchronous::NlSocketHandle,
+    nl::{NlPayload, Nlmsghdr},
+    router::synchronous::NlRouter,
     types::{Buffer, GenlBuffer},
     utils::Groups,
 };
@@ -19,14 +19,14 @@ use crate::result::*;
 /// The `Conntrack` type is used to connect to a netfilter socket and execute
 /// conntrack table specific commands.
 pub struct Conntrack {
-    socket: NlSocketHandle,
+    socket: NlRouter,
 }
 
 impl Conntrack {
     /// This method opens a netfilter socket using a `socket()` syscall, and
     /// returns the `Conntrack` instance on success.
     pub fn connect() -> Result<Self> {
-        let socket = NlSocketHandle::connect(NlFamily::Netfilter, Some(0), Groups::empty())?;
+        let socket = NlRouter::connect(NlFamily::Netfilter, Some(0), Groups::empty())?.0;
         Ok(Self { socket })
     }
 
@@ -39,18 +39,13 @@ impl Conntrack {
             .attrs(GenlBuffer::<ConntrackAttr, Buffer>::new())
             .build()?;
 
-        let msg = NlmsghdrBuilder::default()
-            .nl_type(CtNetlinkMessage::Conntrack)
-            .nl_flags(NlmF::REQUEST | NlmF::DUMP)
-            .nl_payload(NlPayload::Payload(genlhdr))
-            .build()?;
-
-        self.socket.send(&msg)?;
+        let recv_iter = self.socket.send(
+            CtNetlinkMessage::Conntrack,
+            NlmF::DUMP,
+            NlPayload::Payload(genlhdr),
+        )?;
 
         let mut flows = Vec::new();
-        let (recv_iter, _) = self
-            .socket
-            .recv::<CtNetlinkMessage, Genlmsghdr<u8, ConntrackAttr>>()?;
 
         for result in recv_iter {
             let result: Nlmsghdr<CtNetlinkMessage, Genlmsghdr<u8, ConntrackAttr>> = result?;
