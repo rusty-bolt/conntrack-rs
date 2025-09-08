@@ -26,3 +26,7 @@ env_logger = "0.11.8"
 [[example]]
 name = "conntrack-dump"
 path = "examples/conntrack_dump.rs"
+
+[[example]]
+name = "conntrack-events"
+path = "examples/conntrack_events.rs"

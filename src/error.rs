@@ -27,6 +27,9 @@ pub enum Error {
 
     #[error(transparent)]
     NlBuilder(#[from] neli::nl::NlmsghdrBuilderError),
+
+    #[error("No data received")]
+    NoData,
 }
 
 impl<T: Debug, P: Debug> From<neli::err::RouterError<T, P>> for Error {

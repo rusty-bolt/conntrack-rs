@@ -8,6 +8,11 @@ const fn subsys_message(subsys: CtNetlinkSubsys, msg: CtMessage) -> u16 {
     ((subsys as u16) << 8) | (msg as u16)
 }
 
+#[inline]
+const fn subsys_event_message(subsys: CtNetlinkSubsys, msg: CtEventMessage) -> u16 {
+    ((subsys as u16) << 8) | (msg as u16)
+}
+
 #[repr(u8)]
 #[allow(unused)]
 pub enum CtNetlinkSubsys {
@@ -28,9 +33,19 @@ pub enum CtMessage {
     CtGetUnconfirmed = 7u8,
 }
 
+#[repr(u8)]
+pub enum CtEventMessage {
+    CtNew = 0u8,
+    CtUpdate = 1u8,
+    CtDestroy = 2u8,
+}
+
 #[neli_enum(serialized_type = "u16")]
 pub enum CtNetlinkMessage {
     Conntrack = subsys_message(CtNetlinkSubsys::CtNetlink, CtMessage::CtGet),
+    ConntrackNew = subsys_event_message(CtNetlinkSubsys::CtNetlink, CtEventMessage::CtNew),
+    ConntrackUpdate = subsys_event_message(CtNetlinkSubsys::CtNetlink, CtEventMessage::CtUpdate),
+    ConntrackDestroy = subsys_event_message(CtNetlinkSubsys::CtNetlink, CtEventMessage::CtDestroy),
 }
 
 impl neli::consts::nl::NlType for CtNetlinkMessage {}

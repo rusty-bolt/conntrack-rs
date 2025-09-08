@@ -53,6 +53,7 @@
 pub use crate::connection::*;
 pub use crate::error::*;
 pub use crate::result::*;
+pub use crate::model::*;
 
 pub mod attributes;
 pub mod decoders;
