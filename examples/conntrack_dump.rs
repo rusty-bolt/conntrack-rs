@@ -11,7 +11,7 @@ fn main() -> Result<()> {
     env_logger::init_from_env(env);
 
     // Create the Conntrack table via netfilter socket syscall
-    let mut ct = Conntrack::connect()?;
+    let ct = Conntrack::connect()?;
 
     // Dump conntrack table as a Vec<Flow>
     let flows = ct.dump()?;
