@@ -308,3 +308,86 @@ bitflags! {
         const StatusOffload = 1 << 14;
     }
 }
+
+/// Event types for conntrack monitoring
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, Serialize, Deserialize)]
+pub enum ConntrackEventType {
+    /// New connection established
+    New,
+    /// Existing connection updated
+    Update,
+    /// Connection destroyed/expired
+    Destroy,
+}
+
+/// Event mask for filtering which events to monitor
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
+pub struct EventMask {
+    pub new: bool,
+    pub update: bool,
+    pub destroy: bool,
+}
+
+impl EventMask {
+    /// Create an event mask that monitors all events
+    pub fn all() -> Self {
+        Self {
+            new: true,
+            update: true,
+            destroy: true,
+        }
+    }
+
+    /// Create an event mask that monitors only new connections
+    pub fn new_only() -> Self {
+        Self {
+            new: true,
+            update: false,
+            destroy: false,
+        }
+    }
+
+    /// Create an event mask that monitors only updates
+    pub fn update_only() -> Self {
+        Self {
+            new: false,
+            update: true,
+            destroy: false,
+        }
+    }
+
+    /// Create an event mask that monitors only destroyed connections
+    pub fn destroy_only() -> Self {
+        Self {
+            new: false,
+            update: false,
+            destroy: true,
+        }
+    }
+
+    /// Convert to netlink event flags
+    pub fn to_netlink_flags(&self) -> u32 {
+        let mut flags = 0u32;
+        if self.new {
+            flags |= libc::NFNLGRP_CONNTRACK_NEW as u32;
+        }
+        if self.update {
+            flags |= libc::NFNLGRP_CONNTRACK_UPDATE as u32;
+        }
+        if self.destroy {
+            flags |= libc::NFNLGRP_CONNTRACK_DESTROY as u32;
+        }
+        flags
+    }
+}
+
+/// A conntrack event containing the event type and flow information
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub struct ConntrackEvent {
+    /// The type of event (NEW, UPDATE, DESTROY)
+    pub event_type: ConntrackEventType,
+    /// The flow information
+    pub flow: Flow,
+    /// Timestamp when the event was received
+    pub timestamp: DateTime<Utc>,
+}

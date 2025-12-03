@@ -1,2 +1,14 @@
-[target.x86_64-unknown-linux-gnu]
-runner = 'sudo -E'
+[target.armv7-unknown-linux-gnueabihf]
+linker = "arm-linux-gnueabihf-gcc"
+
+[target.armv7-unknown-linux-musleabihf]
+linker = "./arm-linux-musleabihf-cross/bin/arm-linux-musleabihf-gcc"
+rustflags = ["-C", "target-feature=+crt-static"]
+
+[env]
+CC_armv7_unknown_linux_gnueabihf = "arm-linux-gnueabihf-gcc"
+CXX_armv7_unknown_linux_gnueabihf = "arm-linux-gnueabihf-g++"
+AR_armv7_unknown_linux_gnueabihf = "arm-linux-gnueabihf-ar"
+CC_armv7_unknown_linux_musleabihf = "qemu-arm-static"
+CXX_armv7_unknown_linux_musleabihf = "qemu-arm-static"
+AR_armv7_unknown_linux_musleabihf = "qemu-arm-static"
