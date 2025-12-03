@@ -32,7 +32,7 @@ impl Conntrack {
 
     /// The dump call will list all connection tracking for the `Conntrack` table as a
     /// `Vec<Flow>` instances.
-    pub fn dump(&mut self) -> Result<Vec<Flow>> {
+    pub fn dump(&self) -> Result<Vec<Flow>> {
         let genlhdr = GenlmsghdrBuilder::default()
             .cmd(0u8)
             .version(libc::NFNETLINK_V0 as u8)
