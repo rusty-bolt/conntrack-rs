@@ -1,6 +1,6 @@
 [package]
 name = "conntrack"
-version = "0.1.4"
+version = "0.1.5"
 authors = ["Matt Bolt <mbolt35@gmail.com>"]
 repository = "https://github.com/rusty-bolt/conntrack-rs"
 description = "Netfilter Conntrack"
@@ -11,13 +11,13 @@ readme = "README.md"
 edition = "2024"
 
 [dependencies]
-thiserror = "2.0.16"
+thiserror = "2.0.17"
 chrono = { version = "0.4.42", features = ["serde"] }
-libc = "0.2.176"
+libc = "0.2.178"
 neli = "0.7.1"
-bitflags = "2.9.4"
-log = "0.4.28"
-serde = { version = "1.0.227", features = ["derive"] }
+bitflags = "2.10.0"
+log = "0.4.29"
+serde = { version = "1.0.228", features = ["derive"] }
 
 [dev-dependencies]
 anyhow = "1.0.100"
